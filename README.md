@@ -1,5 +1,5 @@
 # PRUEBA_3 / ET
-Elias Delgado / Javiera Aguirre 
+Elías Delgado / Javiera Aguirre 
 19.559.725-k / 20.983.491-k
 prueba 1: https://github.com/j4nyx/Tu_primer_pipeline_de_despliegue
 prueba 2: https://github.com/j4nyx/PRUEBA_2_DEVOPS
