@@ -3,7 +3,7 @@ Elías Delgado / Javiera Aguirre
 19.559.726-k / 20.983.491-k
 prueba 1: https://github.com/j4nyx/Tu_primer_pipeline_de_despliegue
 prueba 2: https://github.com/j4nyx/PRUEBA_2_DEVOPS
-prueba 3: 
+prueba 3: https://github.com/j4nyx/PRUEBA_3
 figma:    https://www.figma.com/slides/u9KK8776twfAziQO6ksGOj/devops?node-id=3-106&t=LgaGxruTyrJLELly-1
 
 
@@ -63,6 +63,46 @@ Resultado Final
 Al final del proceso, la alarma fue creada exitosamente, y ahora el sistema está listo para enviar una alerta por correo electrónico si el uso de la CPU del servidor Práctica de monitoreo se dispara por encima del 80% durante al menos 5 minutos.
 Este es un ejemplo completo de cómo usar la infraestructura de monitoreo y notificación de AWS para asegurar la disponibilidad y rendimiento de un servidor.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Configuración de un Entorno de Microservicios con Istio
+
+Este proyecto consistió en configurar una herramienta de gestión de tráfico llamada Istio en un entorno de Kubernetes (el orquestador de contenedores), que estaba corriendo localmente en Docker Desktop. Luego se desplegaron dos servicios (A y B) para demostrar cómo Istio puede controlar el tráfico entre ellos.
+1. Preparación del Entorno Base: 
+Kubernetes en Docker Desktop: Se activó la función de Kubernetes dentro de Docker Desktop, que esencialmente crea un pequeño "clúster" o entorno de prueba en la propia máquina del usuario.
+a)	Resultado: Se verificó que el clúster (docker-desktop) estaba listo y corriendo con la versión v1.32.2 de Kubernetes.
+b)	Instalación de Istio: Istio se instaló usando el comando istioctl install con un perfil de demostración (--set profile=demo).
+Resultado: Se confirmó que los componentes principales de Istio (istiod, gateways, etc.) se instalaron correctamente y sus pods estaban en estado Running en el namespace istio-system.
+2. Instalación de Herramientas de Monitoreo
+Para poder ver qué estaba pasando con el tráfico, se instalaron cuatro herramientas accesorias (los addons):
+a)	Prometheus: Para la recolección de métricas (números y estadísticas del sistema).
+b)	Kiali: Es el panel visual que nos permite ver un gráfico de tráfico (el Service Mesh) entre los servicios.
+c)	Jaeger y Zipkin: Para el tracing (rastreo), que permite seguir la ruta completa de una solicitud a medida que pasa por múltiples servicios.
+d)	Grafana: Para visualizar los datos recopilados por Prometheus a través de dashboards.
+e)	Resultado: Todos estos addons se desplegaron y sus respectivos pods también aparecieron en estado Running.
+3. Despliegue de los Microservicios (Servicio A y Servicio B)
+Se prepararon y desplegaron los dos servicios de prueba que interactuarán dentro de la malla de servicios:
+a)	Construcción de Imágenes: Se crearon las imágenes de Docker para los servicios service-a y service-b.
+b)	Etiquetado del Namespace: Se activó la "inyección automática" de Istio en el namespace default con el comando kubectl label namespace default istio-injection=enabled. Esto asegura que cada pod que se despliegue allí recibirá automáticamente un sidecar de Istio (una especie de "agente de tráfico").
+c)	Creación del Namespace demo-mesh: Aunque se etiquetó default, los servicios se desplegaron en un namespace nuevo llamado demo-mesh y se aplicaron sus archivos de configuración (service-a.yaml, service-b.yaml).
+d)	Configuración de Tráfico (Gateway y VirtualService): Se crearon las reglas de Istio para permitir que el tráfico externo (entrante) llegara a estos servicios.
+
+4. Prueba y Visualización del Control de Tráfico
+Prueba Inicial de Tráfico: Se usó el comando curl para enviar solicitudes al servicio.
+Comportamiento de Istio: Por defecto, Istio aplica una estrategia de Round Robin (o balanceo de carga equitativo), lo que significa que la solicitud se alternaba entre el Servicio A y el Servicio B.
+Visualización en Kiali: El panel de Kiali mostró el gráfico de tráfico:
+Se observó un flujo de tráfico donde el ingressgateway (la puerta de entrada de Istio) dirigía las solicitudes al Servicio B, y este, a su vez, reenviaba la solicitud al Servicio A.
+Prueba de Resiliencia (Balanceo de Carga): Para demostrar el balanceo de carga:
+Se eliminó manualmente una de las instancias (pods) del Servicio B (kubectl delete pod).
+Resultado: Kubernetes/Istio automáticamente iniciaron un nuevo pod para reemplazar el eliminado, manteniendo el servicio en ejecución y demostrando que el sistema es tolerante a fallos (resiliente)
+
+En resumen
+ Se logró establecer un entorno de microservicios, se instaló la malla de servicios Istio para controlar el tráfico entre ellos, se visualizaron las interacciones en el panel Kiali, y se demostró que el sistema puede equilibrar la carga y recuperarse de la pérdida de una instancia de servicio.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 
 
 
