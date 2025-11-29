@@ -3,6 +3,9 @@ Elías Delgado / Javiera Aguirre
 19.559.726-k / 20.983.491-k
 prueba 1: https://github.com/j4nyx/Tu_primer_pipeline_de_despliegue
 prueba 2: https://github.com/j4nyx/PRUEBA_2_DEVOPS
+prueba 3: 
+figma:    https://www.figma.com/slides/u9KK8776twfAziQO6ksGOj/devops?node-id=3-106&t=LgaGxruTyrJLELly-1
+
 
 
 
