@@ -1,65 +1,130 @@
-# PRUEBA_3 / ET
-Elías Delgado / Javiera Aguirre 
-19.559.726-k / 20.983.491-k
-prueba 1: https://github.com/j4nyx/Tu_primer_pipeline_de_despliegue
-prueba 2: https://github.com/j4nyx/PRUEBA_2_DEVOPS
+# Istio
 
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1395/badge)](https://bestpractices.coreinfrastructure.org/projects/1395)
+[![Go Report Card](https://goreportcard.com/badge/github.com/istio/istio)](https://goreportcard.com/report/github.com/istio/istio)
+[![GoDoc](https://godoc.org/istio.io/istio?status.svg)](https://godoc.org/istio.io/istio)
 
+<a href="https://istio.io/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cncf/artwork/refs/heads/main/projects/istio/icon/color/istio-icon-color.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/istio/istio/raw/master/logo/istio-bluelogo-whitebackground-unframed.svg">
+      <img title="Istio" height="100" width="100" alt="Istio logo" src="https://github.com/istio/istio/raw/master/logo/istio-bluelogo-whitebackground-unframed.svg">
+    </picture>
+</a>
 
-AWS EC2
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Creación y Configuración de la Instancia EC2
+---
 
-Esta primera parte consiste en el despliegue de nuestro servidor virtual.
-Lanzamiento de la Instancia: Se creó una instancia de Amazon EC2 llamada "Práctica de monitoreo".
-AMI (Imagen de Máquina de Amazon): Se seleccionó una Amazon Linux 2023 AMI.
-Tipo de Instancia: Es un servidor pequeño, t2.micro, elegido probablemente por ser elegible para el nivel gratuito de AWS (Free tier eligible).
-Almacenamiento: Se configuró un volumen raíz de 8 GiB de tipo gp3.
-Perfil de Instancia IAM (esta parte es necesaria para seguir avanzando): En los detalles avanzados, se prefirió un perfil de instancia IAM llamado LabInstanceProfile. Esto es fundamental, ya que este perfil es el que otorga los 
-permisos necesarios a la instancia para que pueda, por ejemplo, enviar datos y comunicarse con otros servicios de AWS, como CloudWatch y SSM, que usaremos más adelante.
+Istio is an open source service mesh that layers transparently onto existing distributed applications. Istio’s powerful features provide a uniform and more efficient way to secure, connect, and monitor services. Istio is the path to load balancing, service-to-service authentication, and monitoring – with few or no service code changes.
 
-Conectividad y Seguridad:
-Se le asignó un par de claves (Key pair) llamado 22 para el acceso seguro (SSH).
-Se creó un nuevo grupo de seguridad llamado launch-wizard-2.
-Se habilitó el acceso SSH desde cualquier dirección IP (0.0.0.0/0).
-Se habilitó el auto-asignación de una IP pública (54.163.193.98).
+- For in-depth information about how to use Istio, visit [istio.io](https://istio.io)
+- To ask questions and get assistance from our community, visit [GitHub Discussions](https://github.com/istio/istio/discussions)
+- To learn how to participate in our overall community, visit [our community page](https://istio.io/about/community)
 
-Debemos fijarnos si el estado de la instancia fue lanzada y está en estado Running, si en el caso no diga que está corriendo la instancia hay que repetir el paso nuevamente, hasta que quede andando.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Configuración del Agente CloudWatch
-Para monitorear el uso interno de la memoria y el sistema operativo, se necesita un agente especial.
-Validación del Agente SSM: Primero, se verificó que el agente SSM (Systems Manager) estuviera Online para poder gestionar la instancia de forma remota.
-Validación del Agente CloudWatch: El sistema intentó validar el agente CloudWatch. Inicialmente, el estado fue "Did not respond", esto pasa porque la cuenta estudiantil no tiene todos los permisos pero igual se puede llevar a cabo la instalación exitosa.
-Selección de Métricas: Se configuró el agente para que recoja métricas detalladas:
-CPU: Se seleccionó Usage active y Usage system.
-Memoria: Se seleccionó Used percent, Total, y Active.
-Estado Final: La configuración del agente CloudWatch se envió exitosamente a la instancia.
+In this README:
 
-Configuración del Servicio de Notificación (Amazon SNS)
-Para recibir alertas por correo, se configuró el sistema de notificación.
-Creación del Tópico SNS: Se creó un Tópico Standard de Amazon Simple Notification Service (SNS) llamado NotificacionPorCorreo.
-Creación y Confirmación de Suscripción:
-Se creó una suscripción para el tópico, usando el protocolo Email y la dirección javi.aguirre@duocuc.cl como Endpoint.
-El sistema envió un correo de confirmación (que terminó en la carpeta de Spam).
-Se confirmó la suscripción mediante el enlace del correo, y el estado de la suscripción cambió a Confirmed.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Creación de la Alarma de Monitoreo (CloudWatch Alarm)
+- [Introduction](#introduction)
+- [Repositories](#repositories)
+- [Issue management](#issue-management)
 
-Finalmente, se enlaza el monitoreo con la notificación para crear la alerta.
-Creación de la Alarma: Se optó por Create an alarm para la instancia i-0d8e8b48d04371e4f.(práctica de monitoreo) 
-Configuración de la Notificación: Se asoció la alarma al tópico SNS que creamos: “NotificacionPorCorreo”.
-Definición de Umbrales: Se especificaron las condiciones para que la alarma se active:
-Métrica: CPU utilization.
-Agrupación de Muestras: Maximum.
-Condición (Umbral): Cuando el porcentaje de utilización de la CPU sea mayor o igual a (> =) 80%.
-Período: Durante 1 período consecutivo de 5 minutos.
-Nombre de la Alarma: Se nombró la alarma como awsec2-i-0d8e8b48d04371e4f-GreaterThanOrEqualToThreshold-CPUUtilization.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Resultado Final
+In addition, here are some other documents you may wish to read:
 
-Al final del proceso, la alarma fue creada exitosamente, y ahora el sistema está listo para enviar una alerta por correo electrónico si el uso de la CPU del servidor Práctica de monitoreo se dispara por encima del 80% durante al menos 5 minutos.
-Este es un ejemplo completo de cómo usar la infraestructura de monitoreo y notificación de AWS para asegurar la disponibilidad y rendimiento de un servidor.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- [Istio Community](https://github.com/istio/community#istio-community) - describes how to get involved and contribute to the Istio project
+- [Istio Developer's Guide](https://github.com/istio/istio/wiki/Preparing-for-Development) - explains how to set up and use an Istio development environment
+- [Project Conventions](https://github.com/istio/istio/wiki/Development-Conventions) - describes the conventions we use within the code base
+- [Creating Fast and Lean Code](https://github.com/istio/istio/wiki/Writing-Fast-and-Lean-Code) - performance-oriented advice and guidelines for the code base
 
+You'll find many other useful documents on our [Wiki](https://github.com/istio/istio/wiki).
 
+## Introduction
 
+[Istio](https://istio.io/latest/docs/concepts/what-is-istio/) is an open platform for providing a uniform way to [integrate
+microservices](https://istio.io/latest/docs/examples/microservices-istio/), manage [traffic flow](https://istio.io/latest/docs/concepts/traffic-management/) across microservices, enforce policies
+and aggregate telemetry data. Istio's control plane provides an abstraction
+layer over the underlying cluster management platform, such as Kubernetes.
+
+Istio is composed of these components:
+
+- **Envoy** - Sidecar proxies per microservice to handle ingress/egress traffic
+   between services in the cluster and from a service to external
+   services. The proxies form a _secure microservice mesh_ providing a rich
+   set of functions like discovery, rich layer-7 routing, circuit breakers,
+   policy enforcement and telemetry recording/reporting
+   functions.
+
+  > Note: The service mesh is not an overlay network. It
+  > simplifies and enhances how microservices in an application talk to each
+  > other over the network provided by the underlying platform.
+
+- **Istiod** - The Istio control plane. It provides service discovery, configuration and certificate management. It consists of the following sub-components:
+
+    - **Pilot** - Responsible for configuring the proxies at runtime.
+
+    - **Citadel** - Responsible for certificate issuance and rotation.
+
+    - **Galley** - Responsible for validating, ingesting, aggregating, transforming and distributing config within Istio.
+
+- **Operator** - The component provides user friendly options to operate the Istio service mesh.
+
+## Repositories
+
+The Istio project is divided across a few GitHub repositories:
+
+- [istio/api](https://github.com/istio/api). This repository defines
+component-level APIs and common configuration formats for the Istio platform.
+
+- [istio/community](https://github.com/istio/community). This repository contains
+information on the Istio community, including the various documents that govern
+the Istio open source project.
+
+- [istio/istio](README.md). This is the main code repository. It hosts Istio's
+core components, install artifacts, and sample programs. It includes:
+
+    - [istioctl](istioctl/). This directory contains code for the
+[_istioctl_](https://istio.io/latest/docs/reference/commands/istioctl/) command line utility.
+
+    - [pilot](pilot/). This directory
+contains platform-specific code to populate the
+[abstract service model](https://istio.io/docs/concepts/traffic-management/#pilot), dynamically reconfigure the proxies
+when the application topology changes, as well as translate
+[routing rules](https://istio.io/latest/docs/reference/config/networking/) into proxy specific configuration.
+
+    - [security](security/). This directory contains [security](https://istio.io/latest/docs/concepts/security/) related code,
+including Citadel (acting as Certificate Authority), citadel agent, etc.
+
+- [istio/proxy](https://github.com/istio/proxy). The Istio proxy contains
+extensions to the [Envoy proxy](https://github.com/envoyproxy/envoy) (in the form of
+Envoy filters) that support authentication, authorization, and telemetry collection.
+
+- [istio/ztunnel](https://github.com/istio/ztunnel). The repository contains the Rust implementation of the ztunnel
+component of Ambient mesh.
+
+- [istio/client-go](https://github.com/istio/client-go). This repository defines
+  auto-generated Kubernetes clients for interacting with Istio resources programmatically.
+
+> [!NOTE]
+> Only the `istio/api` and `istio/client-go` repositories expose stable interfaces intended for direct usage as libraries.
+
+## Issue management
+
+We use GitHub to track all of our bugs and feature requests. Each issue we track has a variety of metadata:
+
+- **Epic**. An epic represents a feature area for Istio as a whole. Epics are fairly broad in scope and are basically product-level things.
+Each issue is ultimately part of an epic.
+
+- **Milestone**. Each issue is assigned a milestone. This is 0.1, 0.2, ..., or 'Nebulous Future'. The milestone indicates when we
+think the issue should get addressed.
+
+- **Priority**. Each issue has a priority which is represented by the column in the [Prioritization](https://github.com/orgs/istio/projects/6) project. Priority can be one of
+P0, P1, P2, or >P2. The priority indicates how important it is to address the issue within the milestone. P0 says that the
+milestone cannot be considered achieved if the issue isn't resolved.
+
+---
+
+<div align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cncf/artwork/refs/heads/main/other/cncf/horizontal/color-whitetext/cncf-color-whitetext.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/cncf/artwork/master/other/cncf/horizontal/color/cncf-color.svg">
+      <img width="300" alt="Cloud Native Computing Foundation logo" src="https://raw.githubusercontent.com/cncf/artwork/refs/heads/main/other/cncf/horizontal/color-whitetext/cncf-color-whitetext.svg">
+    </picture>
+    <p>Istio is a <a href="https://cncf.io">Cloud Native Computing Foundation</a> project.</p>
+</div>
